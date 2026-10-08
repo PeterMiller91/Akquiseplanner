@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ds-akquise-db-prod
+    environment:
+      POSTGRES_USER: ${DB_USER:-ds_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me}
+      POSTGRES_DB: ${DB_NAME:-ds_akquise}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-ds_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    networks:
+      - akquise-network
+
+  app:
+    build: .
+    container_name: ds-akquise-app-prod
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${DB_USER:-ds_user}:${DB_PASSWORD:-change_me}@postgres:5432/${DB_NAME:-ds_akquise}
+      JWT_SECRET: ${JWT_SECRET:-change_this-to-a-secure-random-string-min-32-chars}
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+    networks:
+      - akquise-network
+
+volumes:
+  postgres_data_prod:
+    driver: local
+
+networks:
+  akquise-network:
+    driver: bridge

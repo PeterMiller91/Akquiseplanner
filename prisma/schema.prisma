@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  customers  Customer[]
+  events     AppEvent[]
+  tasks      Task[]
+  projects   Project[]
+  activities Activity[]
+  goal       Goal?
+
+  @@index([email])
+}
+
+model Customer {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name              String
+  type              String    // "privat" | "gewerbe"
+  sparte            String
+  stage             Int
+  expectedCourtage  Int
+  nextStep          String
+  nextStepAt        DateTime?
+  phone             String?
+  email             String?
+  source            String?
+  projectId         String?
+  note              String?
+  archived          Boolean   @default(false)
+
+  createdAt         DateTime  @default(now())
+  lastContactAt     DateTime?
+
+  activities Activity[]
+
+  @@index([userId])
+  @@index([archived])
+}
+
+model AppEvent {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  customerId  String?
+  title       String
+  start       DateTime
+  durationMin Int
+  place       String?
+
+  createdAt   DateTime   @default(now())
+
+  @@index([userId])
+  @@index([start])
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  customerId  String?
+  title       String
+  due         DateTime
+  done        Boolean    @default(false)
+
+  createdAt   DateTime   @default(now())
+
+  @@index([userId])
+  @@index([done])
+}
+
+model Project {
+  id         String     @id @default(cuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name       String
+  sparten    String     // JSON array as string: ["BU", "Investment"]
+  start      DateTime
+  end        DateTime
+  goalDeals  Int
+
+  createdAt  DateTime   @default(now())
+
+  @@index([userId])
+}
+
+model Activity {
+  id         String     @id @default(cuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  customerId String
+  customer   Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  type       String     // "anruf" | "termin" | "mail" | "phase" | "notiz"
+  text       String
+  at         DateTime
+
+  createdAt  DateTime   @default(now())
+
+  @@index([userId])
+  @@index([customerId])
+}
+
+model Goal {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  month     String
+  courtage  Int
+  deals     Int
+  events    Int
+  leads     Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}

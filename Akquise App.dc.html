@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></helmet>
+<div style="width:390px;height:820px;border-radius:52px;background:#0d0d0f;padding:10px;box-sizing:border-box;box-shadow:0 30px 60px -20px rgba(0,0,0,.35)">
+<div style="position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;background:{{ t.bg }};color:{{ t.ink }};font-family:{{ t.font }};display:flex;flex-direction:column">
+  <div style="height:44px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font-size:14px;font-weight:600">
+    <span>9:41</span>
+    <div style="width:96px;height:26px;border-radius:14px;background:#0d0d0f"></div>
+    <span style="display:flex;gap:4px;align-items:center"><span style="width:16px;height:9px;border:1.5px solid currentColor;border-radius:3px;display:inline-block"></span></span>
+  </div>
+
+  <div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 18px 24px">
+
+  <sc-if value="{{ isStart }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-top:8px">
+        <div>
+          <div style="font-size:13px;color:{{ t.muted }}">Montag, 5. Oktober</div>
+          <div style="font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:{{ t.h1 }};letter-spacing:-0.02em;line-height:1.1">Guten Morgen</div>
+        </div>
+        <div style="width:40px;height:40px;border-radius:50%;background:{{ t.ink }};color:{{ t.bg }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;letter-spacing:.02em">DS</div>
+      </div>
+
+      <div onClick="{{ goZiele }}" style="cursor:pointer;background:{{ t.hero }};color:{{ t.heroInk }};border-radius:{{ t.r }};padding:20px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:{{ t.heroMuted }}"><span>Courtage Oktober</span><span>Ziel {{ g.courtageGoal }}</span></div>
+        <div style="font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:40px;letter-spacing:-0.03em;line-height:1">{{ g.courtage }}</div>
+        <div style="height:8px;border-radius:8px;background:{{ t.heroTrack }};overflow:hidden"><div style="height:100%;width:{{ g.courtagePct }};background:{{ t.heroFill }};border-radius:8px;transition:width .4s"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:{{ t.heroMuted }}"><span>{{ g.courtagePct }} erreicht</span><span>noch 26 Tage</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+        <div onClick="{{ goPipeline }}" style="cursor:pointer;background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.rs }};padding:12px">
+          <div style="font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:26px;line-height:1">{{ kpi.open }}</div>
+          <div style="font-size:11.5px;color:{{ t.muted }};margin-top:6px">Offene Kontakte</div>
+        </div>
+        <div onClick="{{ goKalender }}" style="cursor:pointer;background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.rs }};padding:12px">
+          <div style="font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:26px;line-height:1">{{ kpi.events }}</div>
+          <div style="font-size:11.5px;color:{{ t.muted }};margin-top:6px">Termine diese Woche</div>
+        </div>
+        <div onClick="{{ goAufgaben }}" style="cursor:pointer;background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.rs }};padding:12px">
+          <div style="font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:26px;line-height:1">{{ kpi.tasks }}</div>
+          <div style="font-size:11.5px;color:{{ t.muted }};margin-top:6px">Aufgaben offen</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-weight:700;font-size:15px">Heute</div><div onClick="{{ goKalender }}" style="cursor:pointer;font-size:13px;font-weight:600;color:{{ t.link }}">Kalender</div></div>
+        <div style="background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.r }};overflow:hidden">
+          <sc-for list="{{ todayEvents }}" as="e" hint-placeholder-count="3">
+            <div onClick="{{ e.open }}" style="cursor:pointer;display:flex;gap:14px;align-items:center;padding:13px 16px;border-bottom:1px solid {{ t.line }}">
+              <div style="font-size:13px;font-weight:700;width:42px;font-variant-numeric:tabular-nums">{{ e.time }}</div>
+              <div style="width:3px;align-self:stretch;border-radius:3px;background:{{ t.fill }}"></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:14px;font-weight:600">{{ e.title }}</div>
+                <div style="font-size:12px;color:{{ t.muted }}">{{ e.who }} · {{ e.place }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-weight:700;font-size:15px">Aufgaben</div><div onClick="{{ goAufgaben }}" style="cursor:pointer;font-size:13px;font-weight:600;color:{{ t.link }}">Alle</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ tasksPreview }}" as="k" hint-placeholder-count="3">
+            <div onClick="{{ k.toggle }}" style="cursor:pointer;display:flex;gap:12px;align-items:center;padding:12px 14px;background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.rs }}">
+              <div style="width:20px;height:20px;flex:none;border-radius:6px;border:1.5px solid {{ k.boxBorder }};background:{{ k.boxBg }};color:{{ t.btnInk }};font-size:12px;display:flex;align-items:center;justify-content:center">{{ k.mark }}</div>
+              <div style="flex:1;font-size:14px;text-decoration:{{ k.deco }};color:{{ k.color }}">{{ k.title }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-weight:700;font-size:15px">Akquise-Projekte</div><div onClick="{{ goProjekte }}" style="cursor:pointer;font-size:13px;font-weight:600;color:{{ t.link }}">Alle</div></div>
+        <div style="display:flex;gap:10px;overflow-x:auto;margin:0 -18px;padding:0 18px 4px">
+          <sc-for list="{{ projects }}" as="p" hint-placeholder-count="2">
+            <div onClick="{{ goProjekte }}" style="cursor:pointer;flex:none;width:200px;background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.r }};padding:14px;display:flex;flex-direction:column;gap:10px">
+              <div style="align-self:flex-start;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;background:{{ t.tagBg }};color:{{ t.tagInk }}">{{ p.sparte }}</div>
+              <div style="font-size:14px;font-weight:700;line-height:1.25">{{ p.name }}</div>
+              <div style="height:5px;border-radius:5px;background:{{ t.track }};overflow:hidden"><div style="height:100%;width:{{ p.pct }};background:{{ t.fill }}"></div></div>
+              <div style="font-size:12px;color:{{ t.muted }}">{{ p.won }} von {{ p.goal }} Abschlüssen</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isPipeline }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="padding-top:8px">
+        <div style="font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:{{ t.h1 }};letter-spacing:-0.02em">Pipeline</div>
+        <div style="font-size:13px;color:{{ t.muted }}">{{ pipe.total }} Potenzial in {{ pipe.count }} Kontakten</div>
+      </div>
+      <div style="display:flex;height:10px;border-radius:10px;overflow:hidden;gap:2px">
+        <sc-for list="{{ stageChips }}" as="s" hint-placeholder-count="6">
+          <div style="flex:{{ s.count }};min-width:6px;background:{{ s.barBg }}"></div>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:8px;overflow-x:auto;margin:0 -18px;padding:0 18px 2px">
+        <sc-for list="{{ stageChips }}" as="s" hint-placeholder-count="6">
+          <div onClick="{{ s.select }}" style="cursor:pointer;flex:none;display:flex;gap:6px;align-items:center;padding:9px 14px;border-radius:30px;font-size:13px;font-weight:600;background:{{ s.bg }};color:{{ s.ink }};border:1px solid {{ s.border }}">{{ s.label }}<span style="opacity:.6">{{ s.count }}</span></div>
+        </sc-for>
+      </div>
+      <div style="font-size:12px;color:{{ t.muted }};display:flex;justify-content:space-between"><span>{{ pipe.stageName }}</span><span>{{ pipe.stageSum }}</span></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ pipeCards }}" as="c" hint-placeholder-count="2">
+          <div style="background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.r }};padding:14px;display:flex;flex-direction:column;gap:12px">
+            <div onClick="{{ c.open }}" style="cursor:pointer;display:flex;gap:12px;align-items:center">
+              <div style="width:40px;height:40px;flex:none;border-radius:50%;background:{{ t.tagBg }};color:{{ t.tagInk }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">{{ c.ini }}</div>
+              <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700">{{ c.name }}</div><div style="font-size:12px;color:{{ t.muted }}">{{ c.sparte }} · {{ c.valueFmt }}</div></div>
+            </div>
+            <div style="font-size:13px;padding:10px 12px;border-radius:{{ t.rs }};background:{{ t.bg }}">{{ c.next }}</div>
+            <sc-if value="{{ c.canAdvance }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;gap:8px">
+                <div onClick="{{ c.open }}" style="cursor:pointer;flex:1;text-align:center;padding:10px;border-radius:{{ t.rs }};border:1px solid {{ t.line }};font-size:13px;font-weight:600">Details</div>
+                <div onClick="{{ c.advance }}" style="cursor:pointer;flex:1.4;text-align:center;padding:10px;border-radius:{{ t.rs }};background:{{ t.btn }};color:{{ t.btnInk }};font-size:13px;font-weight:600">Weiter zu {{ c.nextStage }} →</div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+        <sc-if value="{{ pipe.empty }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:40px 0;font-size:13px;color:{{ t.muted }}">Keine Kontakte in dieser Phase</div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isKunden }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="padding-top:8px;font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:{{ t.h1 }};letter-spacing:-0.02em">Kunden</div>
+      <input value="{{ search }}" onInput="{{ onSearch }}" placeholder="Name oder Firma suchen" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:{{ t.rs }};border:1px solid {{ t.line }};background:{{ t.surface }};font:inherit;font-size:14px;color:{{ t.ink }};outline:none">
+      <div style="display:flex;gap:6px;overflow-x:auto;margin:0 -18px;padding:0 18px 2px">
+        <sc-for list="{{ sparteChips }}" as="s" hint-placeholder-count="7">
+          <div onClick="{{ s.select }}" style="cursor:pointer;flex:none;padding:7px 12px;border-radius:30px;font-size:12.5px;font-weight:600;background:{{ s.bg }};color:{{ s.ink }};border:1px solid {{ s.border }}">{{ s.label }}</div>
+        </sc-for>
+      </div>
+      <div style="background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.r }};overflow:hidden">
+        <sc-for list="{{ customerList }}" as="c" hint-placeholder-count="6">
+          <div onClick="{{ c.open }}" style="cursor:pointer;display:flex;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid {{ t.line }}">
+            <div style="width:38px;height:38px;flex:none;border-radius:50%;background:{{ t.tagBg }};color:{{ t.tagInk }};display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700">{{ c.ini }}</div>
+            <div style="flex:1;min-width:0"><div style="font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.name }}</div><div style="font-size:12px;color:{{ t.muted }}">{{ c.sparte }} · {{ c.last }}</div></div>
+            <div style="font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:20px;border:1px solid {{ t.line }}">{{ c.stageName }}</div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noCustomers }}" hint-placeholder-val="{{ false }}"><div style="padding:30px;text-align:center;font-size:13px;color:{{ t.muted }}">Keine Treffer</div></sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div onClick="{{ goBack }}" style="cursor:pointer;padding-top:8px;font-size:14px;font-weight:600;color:{{ t.link }}">‹ Zurück</div>
+      <div style="display:flex;gap:14px;align-items:center">
+        <div style="width:56px;height:56px;flex:none;border-radius:50%;background:{{ t.hero }};color:{{ t.heroInk }};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700">{{ d.ini }}</div>
+        <div style="min-width:0">
+          <div style="font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:24px;letter-spacing:-0.02em;line-height:1.15">{{ d.name }}</div>
+          <div style="display:flex;gap:6px;margin-top:6px"><span style="font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:20px;background:{{ t.tagBg }};color:{{ t.tagInk }}">{{ d.sparte }}</span><span style="font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid {{ t.line }}">{{ d.valueFmt }}</span></div>
+        </div>
+      </div>
+      <div style="background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.r }};padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:{{ t.muted }}">Phase</span><span style="font-weight:700">{{ d.stageName }}</span></div>
+        <div style="display:flex;gap:4px">
+          <sc-for list="{{ d.steps }}" as="s" hint-placeholder-count="6"><div style="flex:1;height:6px;border-radius:6px;background:{{ s.bg }}"></div></sc-for>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10.5px;color:{{ t.muted }}"><span>Lead</span><span>Abschluss</span></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="cursor:pointer;flex:1;text-align:center;padding:12px;border-radius:{{ t.rs }};border:1px solid {{ t.line }};background:{{ t.surface }};font-size:13.5px;font-weight:600">Anrufen</div>
+        <div style="cursor:pointer;flex:1;text-align:center;padding:12px;border-radius:{{ t.rs }};border:1px solid {{ t.line }};background:{{ t.surface }};font-size:13.5px;font-weight:600">Termin</div>
+        <sc-if value="{{ d.canAdvance }}" hint-placeholder-val="{{ true }}">
+          <div onClick="{{ d.advance }}" style="cursor:pointer;flex:1.3;text-align:center;padding:12px;border-radius:{{ t.rs }};background:{{ t.btn }};color:{{ t.btnInk }};font-size:13.5px;font-weight:600">Phase weiter</div>
+        </sc-if>
+      </div>
+      <div style="padding:14px;border-radius:{{ t.r }};background:{{ t.tagBg }};color:{{ t.tagInk }}">
+        <div style="font-size:12px;font-weight:600;opacity:.75">Nächster Schritt</div>
+        <div style="font-size:15px;font-weight:700;margin-top:4px">{{ d.next }}</div>
+      </div>
+      <div style="background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.r }};overflow:hidden">
+        <sc-for list="{{ d.info }}" as="i" hint-placeholder-count="4">
+          <div style="display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid {{ t.line }};font-size:13.5px"><span style="color:{{ t.muted }}">{{ i.k }}</span><span style="font-weight:600;text-align:right">{{ i.v }}</span></div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-weight:700;font-size:15px">Notiz</div>
+        <div style="font-size:13.5px;line-height:1.5;color:{{ t.muted }};text-wrap:pretty">{{ d.note }}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="font-weight:700;font-size:15px">Verlauf</div>
+        <sc-for list="{{ d.activity }}" as="a" hint-placeholder-count="3">
+          <div style="display:flex;gap:12px">
+            <div style="width:9px;height:9px;margin-top:5px;border-radius:50%;flex:none;background:{{ t.fill }}"></div>
+            <div style="flex:1"><div style="font-size:13.5px;font-weight:600">{{ a.title }}</div><div style="font-size:12px;color:{{ t.muted }}">{{ a.when }} · {{ a.txt }}</div></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isKalender }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="padding-top:8px"><div style="font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:{{ t.h1 }};letter-spacing:-0.02em">Oktober 2026</div><div style="font-size:13px;color:{{ t.muted }}">KW 41 · {{ kpi.events }} Termine</div></div>
+      <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px">
+        <sc-for list="{{ days }}" as="d" hint-placeholder-count="7">
+          <div onClick="{{ d.select }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;border-radius:{{ t.rs }};background:{{ d.bg }};color:{{ d.ink }}">
+            <span style="font-size:11px;opacity:.7">{{ d.wd }}</span>
+            <span style="font-size:17px;font-weight:700">{{ d.num }}</span>
+            <span style="width:5px;height:5px;border-radius:50%;background:{{ d.dot }}"></span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font-weight:700;font-size:15px">{{ dayLabel }}</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ dayEvents }}" as="e" hint-placeholder-count="2">
+          <div onClick="{{ e.open }}" style="cursor:pointer;display:flex;gap:14px;padding:14px;background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.r }}">
+            <div style="display:flex;flex-direction:column;align-items:flex-start;width:46px"><span style="font-size:14px;font-weight:700">{{ e.time }}</span><span style="font-size:11.5px;color:{{ t.muted }}">{{ e.dur }}</span></div>
+            <div style="width:3px;border-radius:3px;background:{{ t.fill }}"></div>
+            <div style="flex:1;min-width:0"><div style="font-size:14.5px;font-weight:600">{{ e.title }}</div><div style="font-size:12.5px;color:{{ t.muted }}">{{ e.who }}</div><div style="font-size:12px;color:{{ t.muted }};margin-top:4px">{{ e.place }}</div></div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ dayEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:36px 0;text-align:center;font-size:13px;color:{{ t.muted }}">Keine Termine – Zeit für Akquise-Anrufe</div></sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isAufgaben }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div onClick="{{ goStart }}" style="cursor:pointer;padding-top:8px;font-size:14px;font-weight:600;color:{{ t.link }}">‹ Übersicht</div>
+      <div><div style="font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:{{ t.h1 }};letter-spacing:-0.02em">Aufgaben</div><div style="font-size:13px;color:{{ t.muted }}">{{ taskStat }}</div></div>
+      <div style="height:6px;border-radius:6px;background:{{ t.track }};overflow:hidden"><div style="height:100%;width:{{ taskPct }};background:{{ t.fill }};transition:width .3s"></div></div>
+      <sc-for list="{{ taskGroups }}" as="grp" hint-placeholder-count="2">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:{{ t.muted }}">{{ grp.label }}</div>
+          <sc-for list="{{ grp.items }}" as="k" hint-placeholder-count="3">
+            <div onClick="{{ k.toggle }}" style="cursor:pointer;display:flex;gap:12px;align-items:flex-start;padding:13px 14px;background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.rs }}">
+              <div style="width:20px;height:20px;flex:none;border-radius:6px;border:1.5px solid {{ k.boxBorder }};background:{{ k.boxBg }};color:{{ t.btnInk }};font-size:12px;display:flex;align-items:center;justify-content:center">{{ k.mark }}</div>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;text-decoration:{{ k.deco }};color:{{ k.color }}">{{ k.title }}</div><div style="font-size:12px;color:{{ t.muted }};margin-top:2px">{{ k.who }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isProjekte }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div onClick="{{ goStart }}" style="cursor:pointer;padding-top:8px;font-size:14px;font-weight:600;color:{{ t.link }}">‹ Übersicht</div>
+      <div><div style="font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:{{ t.h1 }};letter-spacing:-0.02em">Akquise-Projekte</div><div style="font-size:13px;color:{{ t.muted }}">{{ projCount }} aktive Kampagnen</div></div>
+      <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
+        <div style="background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.r }};overflow:hidden">
+          <div onClick="{{ p.toggle }}" style="cursor:pointer;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;background:{{ t.tagBg }};color:{{ t.tagInk }}">{{ p.sparte }}</span><span style="font-size:12px;color:{{ t.muted }}">{{ p.period }}</span></div>
+            <div style="font-size:16px;font-weight:700">{{ p.name }}</div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+              <div><div style="font-size:18px;font-weight:700">{{ p.leads }}</div><div style="font-size:11px;color:{{ t.muted }}">Leads</div></div>
+              <div><div style="font-size:18px;font-weight:700">{{ p.won }}</div><div style="font-size:11px;color:{{ t.muted }}">Abschlüsse</div></div>
+              <div><div style="font-size:18px;font-weight:700">{{ p.rate }}</div><div style="font-size:11px;color:{{ t.muted }}">Quote</div></div>
+            </div>
+            <div style="height:6px;border-radius:6px;background:{{ t.track }};overflow:hidden"><div style="height:100%;width:{{ p.pct }};background:{{ t.fill }}"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:{{ t.muted }}"><span>Ziel: {{ p.goal }} Abschlüsse</span><span>{{ p.chev }}</span></div>
+          </div>
+          <sc-if value="{{ p.open }}" hint-placeholder-val="{{ false }}">
+            <div style="border-top:1px solid {{ t.line }}">
+              <sc-for list="{{ p.members }}" as="c" hint-placeholder-count="2">
+                <div onClick="{{ c.open }}" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid {{ t.line }};font-size:13.5px"><span style="font-weight:600">{{ c.name }}</span><span style="font-size:12px;color:{{ t.muted }}">{{ c.stageName }} ›</span></div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isZiele }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="padding-top:8px"><div style="font-family:{{ t.head }};font-weight:{{ t.hw }};font-size:{{ t.h1 }};letter-spacing:-0.02em">Ziele</div><div style="font-size:13px;color:{{ t.muted }}">Oktober 2026</div></div>
+      <div style="background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.r }};padding:16px;display:flex;flex-direction:column;gap:16px">
+        <sc-for list="{{ goals }}" as="g" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;justify-content:space-between;font-size:13.5px"><span style="font-weight:600">{{ g.label }}</span><span><b>{{ g.val }}</b><span style="color:{{ t.muted }}"> / {{ g.goal }}</span></span></div>
+            <div style="height:8px;border-radius:8px;background:{{ t.track }};overflow:hidden"><div style="height:100%;width:{{ g.pct }};background:{{ t.fill }};border-radius:8px;transition:width .4s"></div></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:700;font-size:15px">Akquise-Trichter</div>
+        <div style="background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.r }};padding:16px;display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ funnel }}" as="f" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:70px 1fr 24px;gap:10px;align-items:center;font-size:12.5px">
+              <span style="color:{{ t.muted }}">{{ f.label }}</span>
+              <div style="height:22px;border-radius:6px;background:{{ t.track }};overflow:hidden"><div style="height:100%;width:{{ f.pct }};background:{{ f.bg }};border-radius:6px;transition:width .4s"></div></div>
+              <span style="font-weight:700;text-align:right">{{ f.n }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-weight:700;font-size:15px">Pipeline nach Sparte</div>
+        <div style="background:{{ t.surface }};border:1px solid {{ t.line }};border-radius:{{ t.r }};overflow:hidden">
+          <sc-for list="{{ sparten }}" as="s" hint-placeholder-count="6">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid {{ t.line }};font-size:13.5px"><span style="font-weight:600">{{ s.label }}</span><span style="display:flex;gap:10px;align-items:center"><span style="font-size:12px;color:{{ t.muted }}">{{ s.n }} Kontakte</span><span style="font-weight:700;min-width:70px;text-align:right">{{ s.sum }}</span></span></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  </div>
+
+  <div style="flex:none;display:flex;justify-content:space-around;padding:8px 10px 22px;background:{{ t.navBg }};border-top:1px solid {{ t.line }}">
+    <div onClick="{{ goStart }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 10px;border-radius:14px;background:{{ nav.start.bg }};color:{{ nav.start.c }};font-size:10.5px;font-weight:600;min-width:52px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg>Start</div>
+    <div onClick="{{ goPipeline }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 10px;border-radius:14px;background:{{ nav.pipeline.bg }};color:{{ nav.pipeline.c }};font-size:10.5px;font-weight:600;min-width:52px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="5" height="16" rx="1.5"></rect><rect x="10" y="4" width="5" height="11" rx="1.5"></rect><rect x="17" y="4" width="4" height="7" rx="1.5"></rect></svg>Pipeline</div>
+    <div onClick="{{ goKunden }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 10px;border-radius:14px;background:{{ nav.kunden.bg }};color:{{ nav.kunden.c }};font-size:10.5px;font-weight:600;min-width:52px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.5 3.5 5.2"></path></svg>Kunden</div>
+    <div onClick="{{ goKalender }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 10px;border-radius:14px;background:{{ nav.kalender.bg }};color:{{ nav.kalender.c }};font-size:10.5px;font-weight:600;min-width:52px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2.5"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>Termine</div>
+    <div onClick="{{ goZiele }}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 10px;border-radius:14px;background:{{ nav.ziele.bg }};color:{{ nav.ziele.c }};font-size:10.5px;font-weight:600;min-width:52px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.3" fill="currentColor"></circle></svg>Ziele</div>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:820},&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;],&quot;default&quot;:&quot;a&quot;,&quot;tsType&quot;:&quot;'a'|'b'|'c'&quot;}}">
+const STAGES = ['Lead','Kontakt','Termin','Analyse','Angebot','Abschluss'];
+const SPARTEN = ['BU','Altersvorsorge','Investment','bKV','Strom','Gas'];
+const THEMES = {
+  a: { bg:'#F5F6F8', surface:'#FFFFFF', ink:'#0E1726', muted:'#5B6577', line:'#E5E8ED', link:'#2448E0', fill:'#2F5BFF', track:'#E8ECF3',
+       hero:'#2F5BFF', heroInk:'#FFFFFF', heroMuted:'rgba(255,255,255,.82)', heroTrack:'rgba(255,255,255,.25)', heroFill:'#FFFFFF',
+       btn:'#2F5BFF', btnInk:'#FFFFFF', tagBg:'#E8EDFF', tagInk:'#1F3FBF', navBg:'#FFFFFF', navActiveBg:'#E8EDFF', navActiveInk:'#2448E0',
+       font:"'Manrope', sans-serif", head:"'Manrope', sans-serif", hw:800, h1:'28px', r:'18px', rs:'12px' },
+  b: { bg:'#F3F0E9', surface:'#FFFDF8', ink:'#1D2920', muted:'#646D5E', line:'#E3DDD0', link:'#2E5E46', fill:'#2E5E46', track:'#E7E2D6',
+       hero:'#1F3A2C', heroInk:'#F6F1E6', heroMuted:'rgba(246,241,230,.75)', heroTrack:'rgba(246,241,230,.18)', heroFill:'#D9C48F',
+       btn:'#2E5E46', btnInk:'#FFFFFF', tagBg:'#DFE8DF', tagInk:'#24493A', navBg:'#FFFDF8', navActiveBg:'#DFE8DF', navActiveInk:'#24493A',
+       font:"'DM Sans', sans-serif", head:"'Instrument Serif', serif", hw:400, h1:'36px', r:'14px', rs:'10px' },
+  c: { bg:'#EDEDE8', surface:'#FFFFFF', ink:'#111111', muted:'#5C5C57', line:'#DCDCD5', link:'#111111', fill:'#111111', track:'#E9E9E3',
+       hero:'#111111', heroInk:'#FFFFFF', heroMuted:'rgba(255,255,255,.7)', heroTrack:'rgba(255,255,255,.16)', heroFill:'#C6F24E',
+       btn:'#111111', btnInk:'#C6F24E', tagBg:'#E6F7BE', tagInk:'#2E3D08', navBg:'#FFFFFF', navActiveBg:'#111111', navActiveInk:'#C6F24E',
+       font:"'Space Grotesk', sans-serif", head:"'Space Grotesk', sans-serif", hw:600, h1:'30px', r:'22px', rs:'14px' }
+};
+const CUSTOMERS = [
+  { id:1, name:'Jonas Weber', sparte:'BU', stage:2, value:1200, next:'Erstgespräch · Mo 09:00', last:'vor 2 Tagen', phone:'0171 234 5678', mail:'j.weber@mail.de', source:'Empfehlung', project:'BU für Berufseinsteiger', note:'Berufseinsteiger in der IT. Möchte BU mit Nachversicherungsgarantie, Budget ca. 80 € im Monat.' },
+  { id:2, name:'Familie Becker', sparte:'Altersvorsorge', stage:4, value:2400, next:'Angebotsbesprechung · Di 10:00', last:'gestern', phone:'0221 987 654', mail:'becker.familie@web.de', source:'Bestandskunde', project:'Altersvorsorge-Check 40+', note:'Beide 42. Fondsgebundene Rente vs. Basisrente vergleichen. Unterlagen zur gesetzlichen Rente fehlen noch.' },
+  { id:3, name:'Schreinerei Holz & Form GmbH', sparte:'bKV', stage:3, value:6800, next:'Bedarfsanalyse vor Ort · Mo 14:30', last:'vor 4 Tagen', phone:'02203 44 12 0', mail:'info@holzundform.de', source:'Kaltakquise', project:'bKV für Handwerksbetriebe', note:'18 Mitarbeitende. Geschäftsführer will Benefit zur Mitarbeiterbindung. Budget 30–40 € pro Kopf.' },
+  { id:4, name:'Lena Hoffmann', sparte:'Investment', stage:1, value:1500, next:'Rückruf · Mo 17:00', last:'vor 1 Woche', phone:'0152 556 7788', mail:'lena.h@gmx.de', source:'Website', project:'—', note:'Sparplan-Interesse, ca. 300 € monatlich. ETF-Erfahrung vorhanden.' },
+  { id:5, name:'Malerbetrieb Krüger', sparte:'bKV', stage:0, value:4200, next:'Erstkontakt · Do 09:30', last:'neu', phone:'02234 77 81', mail:'kontakt@maler-krueger.de', source:'Handwerkskammer-Event', project:'bKV für Handwerksbetriebe', note:'Visitenkarte vom Netzwerktreffen. 11 Mitarbeitende.' },
+  { id:6, name:'Sarah Yilmaz', sparte:'BU', stage:5, value:1100, next:'Empfehlungsgespräch anfragen', last:'vor 3 Tagen', phone:'0176 112 3344', mail:'s.yilmaz@outlook.de', source:'Empfehlung', project:'BU für Berufseinsteiger', note:'Abschluss BU über 2.000 € Rente. Sehr zufrieden, offen für Empfehlungen.' },
+  { id:7, name:'Thomas Richter', sparte:'Strom', stage:0, value:180, next:'Zählerstand erfragen', last:'neu', phone:'0160 998 1122', mail:'t.richter@mail.de', source:'Wechselaktion', project:'Strom & Gas Wechselsaison', note:'Verbrauch ca. 3.200 kWh. Vertrag läuft Ende November aus.' },
+  { id:8, name:'Praxis Dr. Neumann', sparte:'Gas', stage:1, value:640, next:'Tarifvergleich · Mi 11:00', last:'vor 5 Tagen', phone:'0221 31 45 67', mail:'praxis@dr-neumann.de', source:'Bestandskunde', project:'Strom & Gas Wechselsaison', note:'Gewerbetarif Gas, zwei Standorte.' },
+  { id:9, name:'Markus Schulz', sparte:'Altersvorsorge', stage:2, value:1900, next:'Beratungstermin · Mi 16:00', last:'vor 3 Tagen', phone:'0172 443 2211', mail:'m.schulz@t-online.de', source:'LinkedIn', project:'Altersvorsorge-Check 40+', note:'Selbstständig, 45. Bisher keine private Vorsorge.' },
+  { id:10, name:'Anna Wolf', sparte:'Investment', stage:4, value:2100, next:'Angebot Investment · Fr 13:00', last:'heute', phone:'0157 667 8899', mail:'anna.wolf@mail.de', source:'Empfehlung', project:'—', note:'Einmalanlage 25.000 € aus Erbschaft. Mittleres Risikoprofil.' }
+];
+const EVENTS = [
+  { day:0, time:'09:00', dur:'45 Min', title:'Erstgespräch BU', cid:1, place:'Videocall' },
+  { day:0, time:'14:30', dur:'90 Min', title:'Bedarfsanalyse bKV', cid:3, place:'Vor Ort, Bergisch Gladbach' },
+  { day:0, time:'17:00', dur:'15 Min', title:'Rückruf Sparplan', cid:4, place:'Telefon' },
+  { day:1, time:'10:00', dur:'60 Min', title:'Angebotsbesprechung', cid:2, place:'Büro' },
+  { day:2, time:'11:00', dur:'30 Min', title:'Gas-Tarifvergleich', cid:8, place:'Praxis, Köln-Ehrenfeld' },
+  { day:2, time:'16:00', dur:'60 Min', title:'Beratung Altersvorsorge', cid:9, place:'Videocall' },
+  { day:3, time:'09:30', dur:'30 Min', title:'Erstkontakt bKV', cid:5, place:'Telefon' },
+  { day:4, time:'13:00', dur:'60 Min', title:'Angebot Investment', cid:10, place:'Büro' }
+];
+const TASKS = [
+  { id:1, title:'BU-Angebot für Jonas Weber vorbereiten', cid:1, group:'Heute' },
+  { id:2, title:'Rentenunterlagen Familie Becker anfordern', cid:2, group:'Heute' },
+  { id:3, title:'Mitarbeiterliste Holz & Form prüfen', cid:3, group:'Heute' },
+  { id:4, title:'Zählerstand bei Thomas Richter erfragen', cid:7, group:'Diese Woche' },
+  { id:5, title:'Follow-up Mail an Lena Hoffmann', cid:4, group:'Diese Woche' },
+  { id:6, title:'Empfehlung bei Sarah Yilmaz anfragen', cid:6, group:'Diese Woche' }
+];
+const PROJECTS = [
+  { id:1, name:'bKV für Handwerksbetriebe', sparte:'bKV', period:'Okt – Dez', leads:14, won:2, goal:8 },
+  { id:2, name:'Strom & Gas Wechselsaison', sparte:'Strom · Gas', period:'Okt – Nov', leads:32, won:9, goal:20 },
+  { id:3, name:'BU für Berufseinsteiger', sparte:'BU', period:'Sep – Nov', leads:18, won:4, goal:10 },
+  { id:4, name:'Altersvorsorge-Check 40+', sparte:'Altersvorsorge', period:'Okt – Jan', leads:9, won:1, goal:6 }
+];
+const WD = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+const WDL = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+const eur = n => n.toLocaleString('de-DE') + ' €';
+const ini = n => n.replace(/^(Familie|Praxis Dr\.|Schreinerei|Malerbetrieb)\s/,'').split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+const pct = (a,b) => Math.min(100, Math.round(a/b*100)) + '%';
+
+class Component extends DCLogic {
+  state = { screen:'start', back:'start', cid:null, stage:2, search:'', sparte:'Alle', day:0, done:{}, stages:{}, openProj:null };
+
+  go = s => () => this.setState({ screen:s, cid:null });
+  open = id => () => this.setState(st => ({ cid:id, back: st.screen === 'detail' ? st.back : st.screen, screen:'detail' }));
+  advance = id => () => this.setState(st => {
+    const c = CUSTOMERS.find(x => x.id === id); const cur = st.stages[id] ?? c.stage;
+    return { stages: { ...st.stages, [id]: Math.min(5, cur + 1) } };
+  });
+  toggle = id => () => this.setState(st => ({ done: { ...st.done, [id]: !st.done[id] } }));
+
+  renderVals() {
+    const t = THEMES[this.props.variant] || THEMES.a;
+    const s = this.state;
+    const custs = CUSTOMERS.map(c => {
+      const stage = s.stages[c.id] ?? c.stage;
+      return { ...c, stage, ini: ini(c.name), stageName: STAGES[stage], valueFmt: eur(c.value), open: this.open(c.id),
+        advance: this.advance(c.id), canAdvance: stage < 5, nextStage: STAGES[stage + 1] || '' };
+    });
+    const byId = id => custs.find(c => c.id === id);
+    const navItem = k => ({ bg: s.screen === k ? t.navActiveBg : 'transparent', c: s.screen === k ? t.navActiveInk : t.muted });
+    const evt = e => { const c = byId(e.cid); return { ...e, who: c.name, open: this.open(e.cid) }; };
+    const task = k => {
+      const d = !!s.done[k.id];
+      return { ...k, who: byId(k.cid).name, toggle: this.toggle(k.id), mark: d ? '✓' : '', boxBg: d ? t.btn : 'transparent',
+        boxBorder: d ? t.btn : t.line, deco: d ? 'line-through' : 'none', color: d ? t.muted : t.ink };
+    };
+    const tasks = TASKS.map(task);
+    const doneN = tasks.filter(k => s.done[k.id]).length;
+
+    const won = custs.filter(c => c.stage === 5).reduce((a,c) => a + c.value, 0);
+    const courtage = 6200 + won, goalC = 15000;
+    const wonN = 5 + custs.filter(c => c.stage === 5).length;
+
+    const stageChips = STAGES.map((n,i) => {
+      const count = custs.filter(c => c.stage === i).length; const on = s.stage === i;
+      return { label:n, count, select: () => this.setState({ stage:i }), bg: on ? t.btn : t.surface, ink: on ? t.btnInk : t.ink,
+        border: on ? t.btn : t.line, barBg: i === s.stage ? t.fill : t.track };
+    });
+    const inStage = custs.filter(c => c.stage === s.stage);
+
+    const q = s.search.trim().toLowerCase();
+    const list = custs.filter(c => (s.sparte === 'Alle' || c.sparte === s.sparte) && (!q || c.name.toLowerCase().includes(q)));
+
+    const d = s.cid ? byId(s.cid) : null;
+    const detail = d ? { ...d,
+      steps: STAGES.map((_,i) => ({ bg: i <= d.stage ? t.fill : t.track })),
+      info: [ { k:'Telefon', v:d.phone }, { k:'E-Mail', v:d.mail }, { k:'Quelle', v:d.source }, { k:'Projekt', v:d.project }, { k:'Letzter Kontakt', v:d.last } ],
+      activity: [
+        ...(d.stage > (CUSTOMERS.find(x=>x.id===d.id).stage) ? [{ title:'Phase: ' + d.stageName, when:'gerade eben', txt:'manuell verschoben' }] : []),
+        { title:'Telefonat', when:d.last, txt:'Nächsten Schritt vereinbart' },
+        { title:'Lead angelegt', when:'28.09.', txt:'Quelle: ' + d.source }
+      ] } : {};
+
+    const funnelMax = Math.max(...STAGES.map((_,i) => custs.filter(c => c.stage >= i).length));
+    const funnel = STAGES.map((n,i) => { const k = custs.filter(c => c.stage >= i).length; return { label:n, n:k, pct: pct(k, funnelMax), bg: i === 5 ? t.btn : t.fill }; });
+
+    return {
+      t, d: detail, search: s.search,
+      isStart: s.screen==='start', isPipeline: s.screen==='pipeline', isKunden: s.screen==='kunden', isDetail: s.screen==='detail',
+      isKalender: s.screen==='kalender', isZiele: s.screen==='ziele', isAufgaben: s.screen==='aufgaben', isProjekte: s.screen==='projekte',
+      goStart: this.go('start'), goPipeline: this.go('pipeline'), goKunden: this.go('kunden'), goKalender: this.go('kalender'),
+      goZiele: this.go('ziele'), goAufgaben: this.go('aufgaben'), goProjekte: this.go('projekte'),
+      goBack: () => this.setState({ screen: s.back, cid:null }),
+      nav: { start: navItem('start'), pipeline: navItem('pipeline'), kunden: navItem('kunden'), kalender: navItem('kalender'), ziele: navItem('ziele') },
+      g: { courtage: eur(courtage), courtageGoal: eur(goalC), courtagePct: pct(courtage, goalC) },
+      kpi: { open: custs.filter(c => c.stage < 5).length, events: EVENTS.length, tasks: tasks.length - doneN },
+      todayEvents: EVENTS.filter(e => e.day === 0).map(evt),
+      tasksPreview: tasks.slice(0,3),
+      projects: PROJECTS.map(p => ({ ...p, pct: pct(p.won, p.goal), rate: Math.round(p.won/p.leads*100) + ' %',
+        open: s.openProj === p.id, chev: s.openProj === p.id ? 'Kontakte ausblenden ▴' : 'Kontakte anzeigen ▾',
+        toggle: () => this.setState(st => ({ openProj: st.openProj === p.id ? null : p.id })),
+        members: custs.filter(c => c.project === p.name) })),
+      projCount: PROJECTS.length, stageChips, pipeCards: inStage,
+      pipe: { total: eur(custs.filter(c=>c.stage<5).reduce((a,c)=>a+c.value,0)), count: custs.filter(c=>c.stage<5).length,
+        stageName: STAGES[s.stage] + ' · ' + inStage.length + ' Kontakte', stageSum: eur(inStage.reduce((a,c)=>a+c.value,0)), empty: inStage.length === 0 },
+      onSearch: e => this.setState({ search: e.target.value }),
+      sparteChips: ['Alle', ...SPARTEN].map(n => { const on = s.sparte === n; return { label:n, select: () => this.setState({ sparte:n }),
+        bg: on ? t.btn : t.surface, ink: on ? t.btnInk : t.ink, border: on ? t.btn : t.line }; }),
+      customerList: list, noCustomers: list.length === 0,
+      days: WD.map((w,i) => { const on = s.day === i; const has = EVENTS.some(e => e.day === i);
+        return { wd:w, num: 5 + i, select: () => this.setState({ day:i }), bg: on ? t.btn : 'transparent', ink: on ? t.btnInk : t.ink,
+          dot: has ? (on ? t.btnInk : t.fill) : 'transparent' }; }),
+      dayLabel: WDL[s.day] + ', ' + (5 + s.day) + '. Oktober',
+      dayEvents: EVENTS.filter(e => e.day === s.day).map(evt), dayEmpty: !EVENTS.some(e => e.day === s.day),
+      taskGroups: ['Heute','Diese Woche'].map(gr => ({ label: gr, items: tasks.filter(k => k.group === gr) })),
+      taskStat: doneN + ' von ' + tasks.length + ' erledigt', taskPct: pct(doneN, tasks.length),
+      goals: [
+        { label:'Courtage', val: eur(courtage), goal: eur(goalC), pct: pct(courtage, goalC) },
+        { label:'Abschlüsse', val: wonN, goal: 12, pct: pct(wonN, 12) },
+        { label:'Termine', val: 14, goal: 20, pct: pct(14, 20) },
+        { label:'Neue Leads', val: 23, goal: 30, pct: pct(23, 30) }
+      ],
+      funnel,
+      sparten: SPARTEN.map(n => { const cs = custs.filter(c => c.sparte === n && c.stage < 5); return { label:n, n: cs.length, sum: eur(cs.reduce((a,c)=>a+c.value,0)) }; })
+    };
+  }
+}
+</script>
+</body>
+</html>
